@@ -36,9 +36,9 @@ def generate_seat_arrangement(num_rows, num_columns, branch_data):
 
 st.title("Exam Seat Arrangement")
 
-num_rows = st.number_input("Number of Rows:", min_value=1, value=4)
-num_columns = st.number_input("Number of Columns:", min_value=1, value=6)
-num_branches = st.number_input("Number of Branches:", min_value=1, value=3)
+num_rows = st.number_input("Number of Rows:", min_value=1, value=4, key="num_rows")
+num_columns = st.number_input("Number of Columns:", min_value=1, value=6, key="num_columns")
+num_branches = st.number_input("Number of Branches:", min_value=1, value=3, key="num_branches")
 
 branch_data = []
 
@@ -49,11 +49,15 @@ for i in range(num_branches):
 
 generate_button = st.button("Generate Seat Arrangement")
 
-if generate_button:
-    seat_arrangement = generate_seat_arrangement(num_rows, num_columns, branch_data)
+if "seat_arrangement" not in st.session_state:
+    st.session_state.seat_arrangement = None
 
+if generate_button:
+    st.session_state.seat_arrangement = generate_seat_arrangement(num_rows, num_columns, branch_data)
+
+if st.session_state.seat_arrangement is not None:
     st.subheader("Seat Arrangement:")
-    df = pd.DataFrame(seat_arrangement)
+    df = pd.DataFrame(st.session_state.seat_arrangement)
     st.dataframe(df.style.set_properties(**{'text-align': 'center'}))
 
 st.write("Note: This app ensures students from the same branch are distributed evenly across the seating arrangement.")
